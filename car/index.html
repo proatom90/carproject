@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VELOCITÉ — Future of Luxury</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="noise-overlay"></div>
+
+  <!-- Sticky Navbar -->
+  <nav class="navbar glass" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="logo">
+        <span class="logo-icon">◆</span>
+        <span class="logo-text">VELOCITÉ</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#featured">Model</a></li>
+        <li><a href="#performance">Performance</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#experience">Experience</a></li>
+      </ul>
+      <a href="#featured" class="nav-cta">Reserve</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="grid-floor"></div>
+      <div class="horizon-glow"></div>
+      <canvas id="particleCanvas"></canvas>
+      <div class="speed-lines" id="speedLines"></div>
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow reveal">Beyond Performance</p>
+      <h1 class="hero-title reveal">
+        <span class="title-line">REDEFINE</span>
+        <span class="title-line accent">VELOCITY</span>
+      </h1>
+      <p class="hero-subtitle reveal">
+        The VELOCITÉ XR-9 — where aerospace engineering meets automotive artistry.
+        0–100 in 2.1 seconds. Silence at 340 km/h.
+      </p>
+      <div class="hero-actions reveal">
+        <a href="#featured" class="btn btn-primary">
+          <span>Explore XR-9</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#gallery" class="btn btn-ghost">View Gallery</a>
+      </div>
+      <div class="hero-stats reveal">
+        <div class="hero-stat">
+          <span class="stat-value" data-count="340">0</span>
+          <span class="stat-unit">km/h</span>
+          <span class="stat-label">Top Speed</span>
+        </div>
+        <div class="hero-stat">
+          <span class="stat-value" data-count="2.1" data-decimal="1">0</span>
+          <span class="stat-unit">sec</span>
+          <span class="stat-label">0–100</span>
+        </div>
+        <div class="hero-stat">
+          <span class="stat-value" data-count="1500">0</span>
+          <span class="stat-unit">HP</span>
+          <span class="stat-label">Power</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated Sports Car -->
+    <div class="car-stage">
+      <div class="car-glow"></div>
+      <div class="car-reflection"></div>
+      <svg class="sports-car" id="sportsCar" viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2a2a2e"/>
+            <stop offset="40%" style="stop-color:#4a4a52"/>
+            <stop offset="60%" style="stop-color:#8a8a96"/>
+            <stop offset="100%" style="stop-color:#c0c0c8"/>
+          </linearGradient>
+          <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0"/>
+            <stop offset="50%" style="stop-color:#00d4ff"/>
+            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+          </linearGradient>
+          <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a3a4a;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#0a1a22;stop-opacity:0.6"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Shadow -->
+        <ellipse class="car-shadow" cx="400" cy="255" rx="280" ry="18" fill="rgba(0,212,255,0.15)"/>
+        <!-- Wheels -->
+        <g class="wheel wheel-rear">
+          <circle cx="580" cy="220" r="42" fill="#111" stroke="#333" stroke-width="3"/>
+          <circle cx="580" cy="220" r="28" fill="#1a1a1a" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+          <g class="wheel-spokes">
+            <line x1="580" y1="178" x2="580" y2="262" stroke="#444" stroke-width="2"/>
+            <line x1="538" y1="220" x2="622" y2="220" stroke="#444" stroke-width="2"/>
+            <line x1="550" y1="190" x2="610" y2="250" stroke="#444" stroke-width="2"/>
+            <line x1="610" y1="190" x2="550" y2="250" stroke="#444" stroke-width="2"/>
+          </g>
+          <circle cx="580" cy="220" r="8" fill="#00d4ff" opacity="0.8"/>
+        </g>
+        <g class="wheel wheel-front">
+          <circle cx="220" cy="220" r="38" fill="#111" stroke="#333" stroke-width="3"/>
+          <circle cx="220" cy="220" r="25" fill="#1a1a1a" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+          <g class="wheel-spokes">
+            <line x1="220" y1="182" x2="220" y2="258" stroke="#444" stroke-width="2"/>
+            <line x1="182" y1="220" x2="258" y2="220" stroke="#444" stroke-width="2"/>
+            <line x1="193" y1="193" x2="247" y2="247" stroke="#444" stroke-width="2"/>
+            <line x1="247" y1="193" x2="193" y2="247" stroke="#444" stroke-width="2"/>
+          </g>
+          <circle cx="220" cy="220" r="7" fill="#00d4ff" opacity="0.8"/>
+        </g>
+        <!-- Body -->
+        <path class="car-body" d="M120,200 Q100,200 90,185 L85,170 Q80,155 95,145 L180,120 Q220,105 280,100 L420,95 Q520,92 600,100 L680,108 Q720,112 740,125 L755,140 Q765,155 760,170 L755,185 Q750,200 730,205 L700,210 L650,215 L400,220 L200,218 L150,215 Q130,212 120,200 Z" fill="url(#bodyGrad)" stroke="#666" stroke-width="0.5"/>
+        <!-- Side skirt -->
+        <path d="M150,215 L400,220 L650,215 L640,225 L400,230 L160,225 Z" fill="#1a1a1e" opacity="0.8"/>
+        <!-- Cabin / glass -->
+        <path d="M280,100 L350,85 Q420,72 500,78 L580,88 Q620,95 640,108 L630,130 Q600,125 500,120 L380,118 Q320,115 290,125 Z" fill="url(#glassGrad)" stroke="#00d4ff" stroke-width="0.3" opacity="0.9"/>
+        <!-- Headlights -->
+        <path class="headlight" d="M85,170 Q75,165 80,155 L95,148 Q110,142 115,155 L110,168 Q100,175 85,170 Z" fill="#e8f4ff" filter="url(#glow)"/>
+        <path class="headlight-beam" d="M80,160 L20,140 L15,155 L75,175 Z" fill="url(#accentGrad)" opacity="0.4"/>
+        <!-- Taillights -->
+        <rect class="taillight" x="745" y="148" width="12" height="25" rx="3" fill="#ff2244" filter="url(#glow)"/>
+        <rect class="taillight" x="730" y="152" width="8" height="18" rx="2" fill="#ff4466" opacity="0.6"/>
+        <!-- Accent line -->
+        <path class="accent-line" d="M200,195 Q400,188 680,192" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+        <!-- Spoiler -->
+        <path d="M720,125 L760,115 L765,120 L730,132 Z" fill="#2a2a30" stroke="#555" stroke-width="0.5"/>
+        <!-- Mirror -->
+        <ellipse cx="270" cy="118" rx="8" ry="5" fill="#333" stroke="#00d4ff" stroke-width="0.3"/>
+      </svg>
+      <div class="exhaust-trail" id="exhaustTrail"></div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Featured Car Section -->
+  <section class="featured section" id="featured">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Flagship Model</span>
+        <h2 class="section-title">XR-9 <span class="accent">Hypercar</span></h2>
+        <p class="section-desc">Forged from carbon-titanium composite. Every curve sculpted in a wind tunnel at 400 km/h.</p>
+      </div>
+      <div class="featured-grid">
+        <div class="featured-visual reveal">
+          <div class="featured-frame glass">
+            <div class="featured-car-silhouette"></div>
+            <div class="scan-line"></div>
+            <div class="corner-accent tl"></div>
+            <div class="corner-accent br"></div>
+          </div>
+          <div class="floating-badge">
+            <span class="badge-label">Limited Edition</span>
+            <span class="badge-value">99 Units</span>
+          </div>
+        </div>
+        <div class="featured-info reveal">
+          <div class="feature-card glass">
+            <div class="feature-icon">⚡</div>
+            <h3>Tri-Motor Electric</h3>
+            <p>Three axial-flux motors delivering instant torque vectoring across all four wheels.</p>
+          </div>
+          <div class="feature-card glass">
+            <div class="feature-icon">🛡️</div>
+            <h3>Active Aero Suite</h3>
+            <p>Adaptive rear wing and underbody diffusers adjust in real-time for maximum downforce.</p>
+          </div>
+          <div class="feature-card glass">
+            <div class="feature-icon">💎</div>
+            <h3>Bespoke Interior</h3>
+            <p>Hand-stitched Alcantara, brushed titanium controls, and holographic HUD display.</p>
+          </div>
+          <a href="#" class="btn btn-primary btn-full">
+            <span>Configure Yours</span>
+            <span class="btn-price">From €2.4M</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Performance Stats -->
+  <section class="performance section" id="performance">
+    <div class="performance-bg"></div>
+    <div class="container">
+      <div class="section-header center reveal">
+        <span class="section-tag">Engineering Excellence</span>
+        <h2 class="section-title">Performance <span class="accent">Unleashed</span></h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card glass reveal" data-delay="0">
+          <div class="stat-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="ring-fill" cx="60" cy="60" r="52" data-percent="100"/>
+            </svg>
+            <span class="ring-value" data-count="340">0</span>
+          </div>
+          <h3>Top Speed</h3>
+          <p>km/h — electronically limited for track use only</p>
+        </div>
+        <div class="stat-card glass reveal" data-delay="100">
+          <div class="stat-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="ring-fill" cx="60" cy="60" r="52" data-percent="95"/>
+            </svg>
+            <span class="ring-value" data-count="2.1" data-decimal="1">0</span>
+          </div>
+          <h3>0–100 km/h</h3>
+          <p>seconds — faster than a heartbeat</p>
+        </div>
+        <div class="stat-card glass reveal" data-delay="200">
+          <div class="stat-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="ring-fill" cx="60" cy="60" r="52" data-percent="88"/>
+            </svg>
+            <span class="ring-value" data-count="1500">0</span>
+          </div>
+          <h3>Horsepower</h3>
+          <p>combined tri-motor output</p>
+        </div>
+        <div class="stat-card glass reveal" data-delay="300">
+          <div class="stat-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52"/>
+              <circle class="ring-fill" cx="60" cy="60" r="52" data-percent="75"/>
+            </svg>
+            <span class="ring-value" data-count="520">0</span>
+          </div>
+          <h3>Range</h3>
+          <p>km on a single charge — WLTP cycle</p>
+        </div>
+      </div>
+      <div class="performance-bar reveal">
+        <div class="bar-item">
+          <span class="bar-label">Acceleration</span>
+          <div class="bar-track"><div class="bar-fill" data-width="98"></div></div>
+          <span class="bar-value">98%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">Handling</span>
+          <div class="bar-track"><div class="bar-fill" data-width="96"></div></div>
+          <span class="bar-value">96%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">Braking</span>
+          <div class="bar-track"><div class="bar-fill" data-width="94"></div></div>
+          <span class="bar-value">94%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">Aerodynamics</span>
+          <div class="bar-track"><div class="bar-fill" data-width="99"></div></div>
+          <span class="bar-value">99%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="gallery section" id="gallery">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Visual Masterpiece</span>
+        <h2 class="section-title">The <span class="accent">Gallery</span></h2>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item large reveal" data-delay="0">
+          <div class="gallery-img g1"></div>
+          <div class="gallery-overlay glass">
+            <span>Exterior Profile</span>
+            <button class="gallery-btn">+</button>
+          </div>
+        </div>
+        <div class="gallery-item reveal" data-delay="100">
+          <div class="gallery-img g2"></div>
+          <div class="gallery-overlay glass">
+            <span>Cockpit View</span>
+            <button class="gallery-btn">+</button>
+          </div>
+        </div>
+        <div class="gallery-item reveal" data-delay="200">
+          <div class="gallery-img g3"></div>
+          <div class="gallery-overlay glass">
+            <span>Detail Shot</span>
+            <button class="gallery-btn">+</button>
+          </div>
+        </div>
+        <div class="gallery-item reveal" data-delay="100">
+          <div class="gallery-img g4"></div>
+          <div class="gallery-overlay glass">
+            <span>Night Drive</span>
+            <button class="gallery-btn">+</button>
+          </div>
+        </div>
+        <div class="gallery-item wide reveal" data-delay="200">
+          <div class="gallery-img g5"></div>
+          <div class="gallery-overlay glass">
+            <span>Track Mode</span>
+            <button class="gallery-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Luxury Experience Section -->
+  <section class="experience section" id="experience">
+    <div class="experience-glow"></div>
+    <div class="container">
+      <div class="experience-grid">
+        <div class="experience-content reveal">
+          <span class="section-tag">The VELOCITÉ Life</span>
+          <h2 class="section-title">Luxury <span class="accent">Redefined</span></h2>
+          <p class="experience-text">
+            Ownership extends beyond the vehicle. Private track days at Monza,
+            concierge delivery to any continent, and a lifetime membership to
+            our exclusive owners' circle — where legends gather.
+          </p>
+          <ul class="experience-list">
+            <li class="reveal" data-delay="0">
+              <span class="list-num">01</span>
+              <div>
+                <strong>Global Concierge</strong>
+                <p>24/7 white-glove service across 40 countries</p>
+              </div>
+            </li>
+            <li class="reveal" data-delay="100">
+              <span class="list-num">02</span>
+              <div>
+                <strong>Private Track Access</strong>
+                <p>Reserved sessions at Fiorano, Nürburgring & Spa</p>
+              </div>
+            </li>
+            <li class="reveal" data-delay="200">
+              <span class="list-num">03</span>
+              <div>
+                <strong>Bespoke Commission</strong>
+                <p>1-of-1 paint, interior, and performance packages</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="experience-visual reveal">
+          <div class="orbit-container">
+            <div class="orbit-ring ring-1"></div>
+            <div class="orbit-ring ring-2"></div>
+            <div class="orbit-ring ring-3"></div>
+            <div class="orbit-center glass">
+              <span class="orbit-logo">V</span>
+              <span class="orbit-label">Owners Club</span>
+            </div>
+            <div class="orbit-dot dot-1"></div>
+            <div class="orbit-dot dot-2"></div>
+            <div class="orbit-dot dot-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="footer-glow"></div>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#hero" class="logo">
+            <span class="logo-icon">◆</span>
+            <span class="logo-text">VELOCITÉ</span>
+          </a>
+          <p>Engineering tomorrow's legends, today.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Instagram" class="social-link">IG</a>
+            <a href="#" aria-label="Twitter" class="social-link">X</a>
+            <a href="#" aria-label="YouTube" class="social-link">YT</a>
+            <a href="#" aria-label="LinkedIn" class="social-link">IN</a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Models</h4>
+            <a href="#">XR-9 Hypercar</a>
+            <a href="#">GT-S Coupe</a>
+            <a href="#">E-Tract SUV</a>
+          </div>
+          <div class="footer-col">
+            <h4>Brand</h4>
+            <a href="#">Our Story</a>
+            <a href="#">Sustainability</a>
+            <a href="#">Careers</a>
+          </div>
+          <div class="footer-col">
+            <h4>Support</h4>
+            <a href="#">Contact</a>
+            <a href="#">Dealers</a>
+            <a href="#">Press Kit</a>
+          </div>
+        </div>
+        <div class="footer-newsletter glass">
+          <h4>Stay Ahead</h4>
+          <p>Be first to witness new reveals.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="your@email.com" required>
+            <button type="submit">→</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 VELOCITÉ Automotive. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <div class="lightbox-content" id="lightboxContent"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
