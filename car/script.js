@@ -4,6 +4,20 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const loader = document.getElementById('loadingScreen');
+  if (!loader) {
+    initAll();
+    return;
+  }
+
+  initLoadingScreen()
+    .catch(() => {})
+    .finally(() => {
+      initAll();
+    });
+});
+
+function initAll() {
   initNavbar();
   initCursorGlow();
   initParticles();
@@ -18,7 +32,72 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletter();
   initMobileNav();
   initParallax();
-});
+}
+
+function initLoadingScreen() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  const pctEl = document.getElementById('loadingPct');
+  const barFill = document.getElementById('loadingBarFill');
+  if (!loadingScreen || !pctEl || !barFill) return Promise.resolve();
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const images = [
+    'images/car1.jpg',
+    'images/car2.jpg',
+    'images/car3.jpg',
+    'images/car4.jpg',
+  ];
+
+  const unique = [...new Set(images)];
+  const total = Math.max(1, unique.length);
+
+  let loaded = 0;
+  let targetPct = 0;
+  let displayed = 0;
+
+  loadingScreen.setAttribute('aria-busy', 'true');
+
+  const start = performance.now();
+  const MIN_TIME = reduceMotion ? 400 : 900;
+
+  const tick = () => {
+    displayed += (targetPct - displayed) * 0.12;
+    pctEl.textContent = `${Math.round(displayed)}`;
+    barFill.style.width = `${Math.round(displayed)}%`;
+
+    if (Math.abs(targetPct - displayed) < 0.4 && targetPct >= 100) return;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  return new Promise((resolve) => {
+    const onDone = () => {
+      loaded += 1;
+      targetPct = Math.min(95, Math.round((loaded / total) * 95));
+
+      if (loaded >= total) {
+        targetPct = 100;
+        const elapsed = performance.now() - start;
+        const wait = Math.max(0, MIN_TIME - elapsed);
+
+        setTimeout(() => {
+          loadingScreen.classList.add('is-loaded');
+          loadingScreen.setAttribute('aria-busy', 'false');
+          setTimeout(() => resolve(), 650);
+        }, wait);
+      }
+    };
+
+    unique.forEach((src) => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = onDone;
+      img.onerror = onDone;
+      img.src = src;
+    });
+  });
+}
 
 /* ─── Navbar ─── */
 function initNavbar() {
@@ -52,6 +131,9 @@ function initCursorGlow() {
   const glow = document.getElementById('cursorGlow');
   if (!glow || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  const ring = document.getElementById('cursorRing');
+  const dot = document.getElementById('cursorDot');
+
   let x = 0;
   let y = 0;
   let currentX = 0;
@@ -67,10 +149,29 @@ function initCursorGlow() {
     currentY += (y - currentY) * 0.08;
     glow.style.left = `${currentX}px`;
     glow.style.top = `${currentY}px`;
+    if (ring) {
+      ring.style.left = `${currentX}px`;
+      ring.style.top = `${currentY}px`;
+    }
+    if (dot) {
+      dot.style.left = `${currentX}px`;
+      dot.style.top = `${currentY}px`;
+    }
     requestAnimationFrame(animate);
   }
 
   animate();
+
+  // Metallic "active" cursor when hovering interactive controls.
+  if (window.matchMedia('(pointer:fine)').matches) {
+    const interactive = document.querySelectorAll(
+      'a, button, .btn, .nav-toggle, .nav-cta, .gallery-item'
+    );
+    interactive.forEach((el) => {
+      el.addEventListener('pointerenter', () => document.body.classList.add('cursor--active'));
+      el.addEventListener('pointerleave', () => document.body.classList.remove('cursor--active'));
+    });
+  }
 }
 
 /* ─── Particle Canvas ─── */
@@ -114,7 +215,7 @@ function initParticles() {
     draw() {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 212, 255, ${this.opacity})`;
+      ctx.fillStyle = `rgba(255, 30, 30, ${this.opacity})`;
       ctx.fill();
     }
   }
@@ -320,6 +421,8 @@ function initPerformanceBars() {
 /* ─── Gallery ─── */
 function initGallery() {
   const items = document.querySelectorAll('.gallery-item');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(pointer:fine)').matches;
 
   items.forEach((item) => {
     item.addEventListener('mouseenter', () => {
@@ -328,6 +431,21 @@ function initGallery() {
     item.addEventListener('mouseleave', () => {
       item.style.zIndex = '';
     });
+
+    if (!reduceMotion && finePointer) {
+      item.addEventListener('pointermove', (e) => {
+        const rect = item.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        item.style.setProperty('--rx', `${(-py * 8).toFixed(2)}deg`);
+        item.style.setProperty('--ry', `${(px * 10).toFixed(2)}deg`);
+      });
+
+      item.addEventListener('pointerleave', () => {
+        item.style.setProperty('--rx', '0deg');
+        item.style.setProperty('--ry', '0deg');
+      });
+    }
   });
 }
 
@@ -340,12 +458,12 @@ function initLightbox() {
 
   if (!lightbox) return;
 
-  const gradients = {
-    g1: 'linear-gradient(135deg, #0a1520 0%, #1a3040 50%, #0a1018 100%)',
-    g2: 'linear-gradient(160deg, #151520 0%, #252535 50%, #101015 100%)',
-    g3: 'linear-gradient(200deg, #101018 0%, #202028 40%, #0a0a10 100%)',
-    g4: 'linear-gradient(180deg, #050510 0%, #151525 60%, #0a0a12 100%)',
-    g5: 'linear-gradient(90deg, #0a1018 0%, #253545 50%, #0a1018 100%)',
+  const imageMap = {
+    g1: 'images/car1.jpg',
+    g2: 'images/car2.jpg',
+    g3: 'images/car3.jpg',
+    g4: 'images/car4.jpg',
+    g5: 'images/car1.jpg',
   };
 
   items.forEach((item) => {
@@ -353,15 +471,14 @@ function initLightbox() {
       const img = item.querySelector('.gallery-img');
       const label = item.querySelector('.gallery-overlay span')?.textContent || 'Gallery';
       const className = [...img.classList].find((c) => c.startsWith('g'));
-      const gradient = gradients[className] || gradients.g1;
+      const src = imageMap[className] || imageMap.g1;
 
       content.innerHTML = `
-        <div style="
-          width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-          background:${gradient};
-          font-family:Orbitron,sans-serif;font-size:1.5rem;letter-spacing:0.2em;
-          text-transform:uppercase;color:rgba(0,212,255,0.8);
-        ">${label}</div>
+        <div style="position:relative;width:100%;height:100%;overflow:hidden;border-radius:4px;">
+          <img src="${src}" alt="${label}" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.85) contrast(1.1);">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent 40%);"></div>
+          <span style="position:absolute;bottom:1.5rem;left:1.5rem;font-family:Orbitron,sans-serif;font-size:1rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,30,30,0.9);">${label}</span>
+        </div>
       `;
 
       lightbox.classList.add('active');
@@ -394,8 +511,8 @@ function initNewsletter() {
     const btn = form.querySelector('button');
 
     btn.textContent = '✓';
-    btn.style.background = '#00ff88';
-    btn.style.borderColor = '#00ff88';
+    btn.style.background = '#ff1e1e';
+    btn.style.borderColor = '#ff1e1e';
     input.value = '';
     input.placeholder = 'Welcome to the inner circle.';
 
@@ -426,30 +543,94 @@ function initParallax() {
 
   if (!car || !hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  window.addEventListener(
-    'scroll',
-    () => {
-      const scroll = window.scrollY;
-      const heroHeight = hero.offsetHeight;
+  const heroBg = hero.querySelector('.hero-bg');
+  const fog = hero.querySelector('.fog-layer');
+  const beam = hero.querySelector('.beam-layer');
+  const speedLines = document.getElementById('speedLines');
+  const stage = hero.querySelector('.car-stage');
 
-      if (scroll < heroHeight) {
-        const progress = scroll / heroHeight;
-        car.style.transform = `translateY(${progress * 40}px) scale(${1 - progress * 0.1})`;
-        car.style.opacity = 1 - progress * 0.8;
+  let latestScroll = window.scrollY;
+  let mx = 0.5;
+  let my = 0.35;
+  let tiltX = 0;
+  let tiltY = 0;
+
+  const onScroll = () => {
+    latestScroll = window.scrollY;
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const updateMouse = (clientX, clientY) => {
+    const rect = hero.getBoundingClientRect();
+    const px = (clientX - rect.left) / rect.width; // 0..1
+    const py = (clientY - rect.top) / rect.height; // 0..1
+    mx = Math.min(1, Math.max(0, px));
+    my = Math.min(1, Math.max(0, py));
+    tiltX = mx - 0.5;
+    tiltY = my - 0.5;
+
+    hero.style.setProperty('--mx', `${mx * 100}%`);
+    hero.style.setProperty('--my', `${my * 100}%`);
+  };
+
+  hero.addEventListener('pointermove', (e) => updateMouse(e.clientX, e.clientY), { passive: true });
+
+  // Smooth depth motion loop (kept subtle).
+  let rafId = null;
+  let running = true;
+
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+  const animate = () => {
+    if (!running) return;
+
+    const heroHeight = hero.offsetHeight || 1;
+    const progress = clamp01(latestScroll / heroHeight);
+
+    // Car movement + micro-rotation
+    const carScale = 1 - progress * 0.1;
+    const carY = progress * 40;
+    const carRot = tiltX * 6;
+    car.style.transform = `translateY(${carY}px) scale(${carScale}) rotateZ(${carRot}deg)`;
+    car.style.opacity = String(1 - progress * 0.8);
+
+    // Background parallax
+    if (heroBg) {
+      const bgY = progress * -26;
+      const bgScale = 1.06 + progress * 0.035;
+      heroBg.style.transform = `translate3d(0, ${bgY}px, 0) scale(${bgScale})`;
+    }
+
+    // Atmosphere density
+    if (fog) fog.style.opacity = String(0.45 + progress * 0.25);
+    if (beam) beam.style.opacity = String(0.40 + progress * 0.25);
+    if (speedLines) {
+      speedLines.style.transform = `translate3d(${tiltX * 14}px, 0, 0)`;
+      speedLines.style.opacity = String(0.35 + (1 - progress) * 0.65);
+    }
+
+    if (stage) {
+      stage.style.transform =
+        `translateX(calc(-50% + ${tiltX * 18}px)) ` +
+        `translateY(${tiltY * 10}px) rotateZ(${tiltX * 3}deg)`;
+    }
+
+    rafId = requestAnimationFrame(animate);
+  };
+
+  animate();
+
+  // Stop the loop when leaving the hero to protect performance.
+  const heroObserver = new IntersectionObserver(
+    ([entry]) => {
+      running = entry.isIntersecting;
+      if (running && rafId == null) rafId = requestAnimationFrame(animate);
+      if (!running && rafId != null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
       }
     },
-    { passive: true }
+    { threshold: 0.05 }
   );
-
-  // Mouse tilt on car
-  hero.addEventListener('mousemove', (e) => {
-    const rect = hero.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-    const stage = document.querySelector('.car-stage');
-    if (stage) {
-      stage.style.transform = `translateX(calc(-50% + ${x * 20}px)) translateY(${y * 10}px)`;
-    }
-  });
+  heroObserver.observe(hero);
 }

@@ -10,7 +10,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Premium Loading Screen -->
+  <div id="loadingScreen" class="loading-screen" aria-live="polite" aria-busy="true">
+    <div class="loading-particles" aria-hidden="true"></div>
+    <div class="loading-content">
+      <div class="loading-logo" id="loadingLogo">VELOCITÉ</div>
+      <div class="loading-percent" aria-label="Loading percentage">
+        <span id="loadingPct">0</span><span class="loading-percent-sign">%</span>
+      </div>
+      <div class="loading-bar" aria-hidden="true">
+        <div id="loadingBarFill"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
   <div class="noise-overlay"></div>
 
   <!-- Sticky Navbar -->
@@ -42,6 +58,11 @@
       <canvas id="particleCanvas"></canvas>
       <div class="speed-lines" id="speedLines"></div>
     </div>
+
+    <!-- Hero cinematic layers (no structural change) -->
+    <div class="fog-layer" aria-hidden="true"></div>
+    <div class="beam-layer" aria-hidden="true"></div>
+    <div class="reflection-sweep" aria-hidden="true"></div>
 
     <div class="hero-content">
       <p class="hero-eyebrow reveal">Beyond Performance</p>
@@ -92,9 +113,9 @@
             <stop offset="100%" style="stop-color:#c0c0c8"/>
           </linearGradient>
           <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0"/>
-            <stop offset="50%" style="stop-color:#00d4ff"/>
-            <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+            <stop offset="0%" style="stop-color:#ff1e1e;stop-opacity:0"/>
+            <stop offset="50%" style="stop-color:#ff1e1e"/>
+            <stop offset="100%" style="stop-color:#ff1e1e;stop-opacity:0"/>
           </linearGradient>
           <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#1a3a4a;stop-opacity:0.9"/>
@@ -106,36 +127,36 @@
           </filter>
         </defs>
         <!-- Shadow -->
-        <ellipse class="car-shadow" cx="400" cy="255" rx="280" ry="18" fill="rgba(0,212,255,0.15)"/>
+        <ellipse class="car-shadow" cx="400" cy="255" rx="280" ry="18" fill="rgba(255,30,30,0.2)"/>
         <!-- Wheels -->
         <g class="wheel wheel-rear">
           <circle cx="580" cy="220" r="42" fill="#111" stroke="#333" stroke-width="3"/>
-          <circle cx="580" cy="220" r="28" fill="#1a1a1a" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+          <circle cx="580" cy="220" r="28" fill="#1a1a1a" stroke="#ff1e1e" stroke-width="1" opacity="0.5"/>
           <g class="wheel-spokes">
             <line x1="580" y1="178" x2="580" y2="262" stroke="#444" stroke-width="2"/>
             <line x1="538" y1="220" x2="622" y2="220" stroke="#444" stroke-width="2"/>
             <line x1="550" y1="190" x2="610" y2="250" stroke="#444" stroke-width="2"/>
             <line x1="610" y1="190" x2="550" y2="250" stroke="#444" stroke-width="2"/>
           </g>
-          <circle cx="580" cy="220" r="8" fill="#00d4ff" opacity="0.8"/>
+          <circle cx="580" cy="220" r="8" fill="#ff1e1e" opacity="0.8"/>
         </g>
         <g class="wheel wheel-front">
           <circle cx="220" cy="220" r="38" fill="#111" stroke="#333" stroke-width="3"/>
-          <circle cx="220" cy="220" r="25" fill="#1a1a1a" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+          <circle cx="220" cy="220" r="25" fill="#1a1a1a" stroke="#ff1e1e" stroke-width="1" opacity="0.5"/>
           <g class="wheel-spokes">
             <line x1="220" y1="182" x2="220" y2="258" stroke="#444" stroke-width="2"/>
             <line x1="182" y1="220" x2="258" y2="220" stroke="#444" stroke-width="2"/>
             <line x1="193" y1="193" x2="247" y2="247" stroke="#444" stroke-width="2"/>
             <line x1="247" y1="193" x2="193" y2="247" stroke="#444" stroke-width="2"/>
           </g>
-          <circle cx="220" cy="220" r="7" fill="#00d4ff" opacity="0.8"/>
+          <circle cx="220" cy="220" r="7" fill="#ff1e1e" opacity="0.8"/>
         </g>
         <!-- Body -->
         <path class="car-body" d="M120,200 Q100,200 90,185 L85,170 Q80,155 95,145 L180,120 Q220,105 280,100 L420,95 Q520,92 600,100 L680,108 Q720,112 740,125 L755,140 Q765,155 760,170 L755,185 Q750,200 730,205 L700,210 L650,215 L400,220 L200,218 L150,215 Q130,212 120,200 Z" fill="url(#bodyGrad)" stroke="#666" stroke-width="0.5"/>
         <!-- Side skirt -->
         <path d="M150,215 L400,220 L650,215 L640,225 L400,230 L160,225 Z" fill="#1a1a1e" opacity="0.8"/>
         <!-- Cabin / glass -->
-        <path d="M280,100 L350,85 Q420,72 500,78 L580,88 Q620,95 640,108 L630,130 Q600,125 500,120 L380,118 Q320,115 290,125 Z" fill="url(#glassGrad)" stroke="#00d4ff" stroke-width="0.3" opacity="0.9"/>
+        <path d="M280,100 L350,85 Q420,72 500,78 L580,88 Q620,95 640,108 L630,130 Q600,125 500,120 L380,118 Q320,115 290,125 Z" fill="url(#glassGrad)" stroke="#ff1e1e" stroke-width="0.3" opacity="0.9"/>
         <!-- Headlights -->
         <path class="headlight" d="M85,170 Q75,165 80,155 L95,148 Q110,142 115,155 L110,168 Q100,175 85,170 Z" fill="#e8f4ff" filter="url(#glow)"/>
         <path class="headlight-beam" d="M80,160 L20,140 L15,155 L75,175 Z" fill="url(#accentGrad)" opacity="0.4"/>
@@ -143,11 +164,11 @@
         <rect class="taillight" x="745" y="148" width="12" height="25" rx="3" fill="#ff2244" filter="url(#glow)"/>
         <rect class="taillight" x="730" y="152" width="8" height="18" rx="2" fill="#ff4466" opacity="0.6"/>
         <!-- Accent line -->
-        <path class="accent-line" d="M200,195 Q400,188 680,192" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+        <path class="accent-line" d="M200,195 Q400,188 680,192" fill="none" stroke="#ff1e1e" stroke-width="1.5" opacity="0.7"/>
         <!-- Spoiler -->
         <path d="M720,125 L760,115 L765,120 L730,132 Z" fill="#2a2a30" stroke="#555" stroke-width="0.5"/>
         <!-- Mirror -->
-        <ellipse cx="270" cy="118" rx="8" ry="5" fill="#333" stroke="#00d4ff" stroke-width="0.3"/>
+        <ellipse cx="270" cy="118" rx="8" ry="5" fill="#333" stroke="#ff1e1e" stroke-width="0.3"/>
       </svg>
       <div class="exhaust-trail" id="exhaustTrail"></div>
     </div>
